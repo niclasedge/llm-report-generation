@@ -107,7 +107,7 @@ Continue investing in the training and development of the sales team to ensure t
 
 def get_gpt_extraction(prompt: str, input: str):
     response = oai_client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": input},
@@ -118,7 +118,7 @@ def get_gpt_extraction(prompt: str, input: str):
 
 def get_embeddings(text: str):
     return (
-        oai_client.embeddings.create(input=text, model="text-embedding-ada-002")
+        oai_client.embeddings.create(input=text, model="text-embedding-3-small")
         .data[0]
         .embedding
     )
@@ -126,7 +126,7 @@ def get_embeddings(text: str):
 
 def get_claude_extraction(prompt: str, input: str):
     response = anthropic_client.messages.create(
-        model="claude-3-5-sonnet-20240620",
+        model="claude-3-haiku-20240307",
         max_tokens=1000,
         system=prompt,
         messages=[

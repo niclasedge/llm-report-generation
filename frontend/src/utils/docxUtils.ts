@@ -2,6 +2,7 @@ import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { DocumentContents, Tag, Page } from '../models/CustomDocument';
 // import ChartModule from "docxtemplater-chart-module";
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 
 export async function renderTemplateDocument(contents: DocumentContents): Promise<Blob> {
   try {
@@ -147,7 +148,7 @@ export async function renderFullDocument(
     });
   }
 
-export async function convertDocxToPdf(docxBlob: Blob): Promise<Blob> {
+/* export async function convertDocxToPdf(docxBlob: Blob): Promise<Blob> {
   const apiSecret = process.env.REACT_APP_CONVERT_API_KEY;
   const apiUrl = `https://v2.convertapi.com/convert/docx/to/pdf?Secret=${apiSecret}&StoreFile=true`;
 
@@ -171,6 +172,36 @@ export async function convertDocxToPdf(docxBlob: Blob): Promise<Blob> {
       throw new Error(`HTTP error! status: ${pdfResponse.status}`);
     }
     return await pdfResponse.blob();
+  } catch (error) {
+    console.error('Error converting DOCX to PDF:', error);
+    throw error;
+  }
+} */
+
+
+
+
+
+
+export async function convertDocxToPdf(docxBlob: Blob): Promise<Blob> {
+  try {
+    // Create a new PDF document
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+    const { width, height } = page.getSize();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    // Add a placeholder text to the PDF
+    page.drawText('DOCX content would be here', {
+      x: 50,
+      y: height - 50,
+      size: 20,
+      font: font,
+    });
+
+    // Save the PDF
+    const pdfBytes = await pdfDoc.save();
+    return new Blob([pdfBytes], { type: 'application/pdf' });
   } catch (error) {
     console.error('Error converting DOCX to PDF:', error);
     throw error;
